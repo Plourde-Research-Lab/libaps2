@@ -28,7 +28,11 @@ INCLUDE_DIRECTORIES( "../asio/asio/include" )
 ADD_DEFINITIONS(-DASIO_STANDALONE)
 
 #Add flag for C++11
+#Warn all for better code
+if(NOT MSVC)
 ADD_DEFINITIONS(${CMAKE_CXX_FLAGS} "-std=c++11")
+ADD_DEFINITIONS(${CMAKE_CXX_FLAGS} "-Wall")
+endif()
 
 #mingw64 defaults to WindowsXP SP03 which doesn't support the network calls we want
 #https://github.com/Alexpux/mingw-w64/blob/e960f8fffb399036079cef960a44e86a9abebc71/mingw-w64-headers/include/sdkddkver.h#L145
@@ -37,8 +41,6 @@ if(WIN32)
 ADD_DEFINITIONS(${CMAKE_CXX_FLAGS} "-D_WIN32_WINNT=0x0601")
 endif(WIN32)
 
-#Warn all for better code
-ADD_DEFINITIONS(${CMAKE_CXX_FLAGS} "-Wall")
 
 #Work around a gcc-4.7 issue with sleep_for
 #See: http://stackoverflow.com/questions/4438084/stdthis-threadsleep-for-and-gcc

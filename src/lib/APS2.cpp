@@ -41,7 +41,7 @@ void APS2::disconnect() {
 
 void APS2::reset(const APS_RESET_MODE_STAT & resetMode /* default SOFT_RESET */) {
 
-	APSCommand_t command = { .packed=0 };
+	APSCommand_t command = { 0, 0 };
 
 	command.cmd = static_cast<uint32_t>(APS_COMMANDS::RESET);
 	command.mode_stat = static_cast<uint32_t>(resetMode);
@@ -120,7 +120,7 @@ int APS2::setup_DACs() {
 
 APSStatusBank_t APS2::read_status_registers(){
 	//Query with the status request command
-	APSCommand_t command = { .packed=0 };
+	APSCommand_t command = { 0, 0 };
 	command.cmd = static_cast<uint32_t>(APS_COMMANDS::STATUS);
 	command.r_w = 1;
 	command.mode_stat = APS_STATUS_HOST;
@@ -471,7 +471,7 @@ vector<uint32_t> APS2::read_memory(const uint32_t & addr, const uint32_t & numWo
 //SPI read/write
 void APS2::write_SPI(vector<uint32_t> & msg) {
 	// push on "end of message"
-	APSChipConfigCommand_t cmd = {.packed=0};
+	APSChipConfigCommand_t cmd = {0, 0};
 	cmd.target = CHIPCONFIG_IO_TARGET_EOL;
 	msg.push_back(cmd.packed);
 
@@ -491,8 +491,8 @@ uint32_t APS2::read_SPI(const CHIPCONFIG_IO_TARGET & target, const uint16_t & ad
 
 	// build message
 	APSChipConfigCommand_t cmd;
-	DACCommand_t dacinstr = {.packed = 0};
-	PLLCommand_t pllinstr = {.packed = 0};
+	DACCommand_t dacinstr = {0, 0};
+	PLLCommand_t pllinstr = {0, 0};
 	// config target and instruction
 	switch (target) {
 		case CHIPCONFIG_TARGET_DAC_0:
@@ -579,7 +579,7 @@ int APS2::erase_flash(uint32_t addr, uint32_t numBytes) {
 		return -1;
 	}
 
-	APSCommand_t command = { .packed=0 };
+	APSCommand_t command = { 0, 0 };
 	command.r_w = 0;
 	command.cmd = static_cast<uint32_t>(APS_COMMANDS::EPROMIO);
 	command.mode_stat = EPROM_ERASE;
@@ -607,7 +607,7 @@ int APS2::erase_flash(uint32_t addr, uint32_t numBytes) {
 
 vector<uint32_t> APS2::read_flash(const uint32_t & addr, const uint32_t & numWords) {
 	//TODO: handle reads that require multiple packets
-	APSCommand_t command = { .packed=0 };
+	APSCommand_t command = { 0, 0 };
 	command.r_w = 1;
 	command.cmd = static_cast<uint32_t>(APS_COMMANDS::EPROMIO);
 	command.mode_stat = EPROM_RW;
@@ -687,7 +687,7 @@ int APS2::write_SPI_setup() {
 	// push on "sleep" for 8*256*100ns = 0.205ms
 	msg.push_back(0x00000800);
 	// push on "end of message"
-	APSChipConfigCommand_t cmd = {.packed=0};
+	APSChipConfigCommand_t cmd = {0, 0};
 	cmd.target = CHIPCONFIG_IO_TARGET_EOL;
 	msg.push_back(cmd.packed);
 	return write_flash(0x0, msg);

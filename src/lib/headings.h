@@ -28,7 +28,7 @@
 #include <cmath>
 #include <stdexcept>
 #include <algorithm>
- 
+
 using std::endl;
 using std::vector;
 using std::queue;
@@ -58,6 +58,9 @@ typedef vector<uint16_t> WordVec;
 
 //Deal with some Windows/Linux difference
 #ifdef _WIN32
+#ifdef _MSC_VER
+#define NOMINMAX //don't clobber std::min and std::max
+#endif
 #include "winsock2.h"
 #include "windows.h"
 #else
@@ -167,5 +170,3 @@ inline int mymod(int a, int b) {
 }
 
 #endif /* HEADINGS_H_ */
-
-

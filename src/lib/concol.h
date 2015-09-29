@@ -12,7 +12,9 @@ Global variables - textcol,backcol,deftextcol,defbackcol,colorprotect
 #define CONCOL_H
 
 #ifdef _WIN32
-
+#ifdef _MSC_VER
+#define NOMINMAX
+#endif
 #include<windows.h>
 #include<iosfwd>
 

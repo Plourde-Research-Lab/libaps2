@@ -3,6 +3,7 @@
 #include <signal.h>
 #include <vector>
 #include <thread>
+#include <algorithm>
 
 #include "libaps2.h"
 #include "concol.h"
@@ -77,7 +78,7 @@ int main(int argc, char* argv[])
 	set_logging_level(logLevel);
 	set_log("stdout");
 
-	//Load the waveform files 
+	//Load the waveform files
 	vector<int16_t> wfA, wfB;
 	std::ifstream ifs;
 	if (options[WFA_FILE]) {

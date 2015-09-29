@@ -121,7 +121,7 @@ vector<std::pair<string,string>> APSEthernet::get_local_IPs() {
 
                 IPs.push_back(std::pair<string,string>(IPV4Addr, inet_ntoa(sin.sin_addr)));
                 FILE_LOG(logDEBUG1) << "IPv4 address: " << IPs.back().first <<
-                                        "; Prefix length: " << (unsigned) pUnicast->OnLinkPrefixLength << 
+                                        "; Prefix length: " << (unsigned) pUnicast->OnLinkPrefixLength <<
                                         "; Netmask: " << IPs.back().second;
             }
         }
@@ -245,10 +245,14 @@ int APSEthernet::send(string serial, vector<APSEthernetPacket> msg, unsigned ack
     while (iter != msg.end()) {
 
         //Copy the next chunk into a buffer
-        auto endPoint = iter + ackEvery;
-        if (endPoint > msg.end()) {
+        auto endPoint = iter;
+        if ( std::distance(iter, msg.end()) >= ackEvery ) {
+          endPoint += ackEvery;
+        }
+        else {
             endPoint = msg.end();
         }
+
         auto chunkSize = std::distance(iter, endPoint);
         buffer.resize(chunkSize);
         std::copy(iter, endPoint, buffer.begin());
@@ -289,7 +293,7 @@ int APSEthernet::send_chunk(string serial, vector<APSEthernetPacket> chunk, bool
             seqNum++;
             FILE_LOG(logDEBUG4) << "Packet command: " << print_APSCommand(packet.header.command);
             socket_.send_to(asio::buffer(packet.serialize()), devInfo_[serial].endpoint);
-            // std::this_thread::sleep_for(std::chrono::microseconds(100));
+            std::this_thread::sleep_for(std::chrono::microseconds(1000));
         }
 
         if (noACK) break;

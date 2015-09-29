@@ -145,7 +145,9 @@ class FILELOG_DECLSPEC FILELog : public Log<Output2FILE> {};
     else FILELog().Get(level)
 
 #if defined(WIN32) || defined(_WIN32) || defined(__WIN32__)
-
+#ifdef _MSC_VER
+#define NOMINMAX
+#endif
 #include <windows.h>
 
 inline std::string NowTime()
