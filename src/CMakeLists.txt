@@ -38,9 +38,14 @@ endif()
 #https://github.com/Alexpux/mingw-w64/blob/e960f8fffb399036079cef960a44e86a9abebc71/mingw-w64-headers/include/sdkddkver.h#L145
 #define windows 7 instead
 if(WIN32)
+if(NOT MSVC)
 ADD_DEFINITIONS(${CMAKE_CXX_FLAGS} "-D_WIN32_WINNT=0x0601")
+endif()
+if(MSVC)
+ADD_DEFINITIONS("-DUNICODE")
+ADD_DEFINITIONS("-D_UNICODE")
+endif()
 endif(WIN32)
-
 
 #Work around a gcc-4.7 issue with sleep_for
 #See: http://stackoverflow.com/questions/4438084/stdthis-threadsleep-for-and-gcc

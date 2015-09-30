@@ -104,7 +104,7 @@ vector<std::pair<string,string>> APSEthernet::get_local_IPs() {
             FILE_LOG(logDEBUG2) << "Receive link speed: " << pCurAddresses->ReceiveLinkSpeed;
 
             for (pUnicast = pCurAddresses->FirstUnicastAddress; pUnicast != nullptr; pUnicast = pUnicast->Next) {
-                char IPV4Addr[16]; //should be LPTSTR; 16 is maximum length of null terminated xxx.xxx.xxx.xxx
+                wchar_t IPV4Addr[16]; //16 is maximum length of null terminated xxx.xxx.xxx.xxx
                 DWORD addrSize = 16;
                 int val;
                 val = WSAAddressToString(pUnicast->Address.lpSockaddr, pUnicast->Address.iSockaddrLength, nullptr, IPV4Addr, &addrSize);
@@ -119,7 +119,11 @@ vector<std::pair<string,string>> APSEthernet::get_local_IPs() {
                 sin.sin_family = AF_INET;
                 sin.sin_addr.s_addr = htonl(0xffffffff << (32 - pUnicast->OnLinkPrefixLength));
 
-                IPs.push_back(std::pair<string,string>(IPV4Addr, inet_ntoa(sin.sin_addr)));
+                //Dance around conversion between unicode and ascii
+                std::wstring tmpIP_w(IPV4Addr);
+                string tmpIP(tmpIP_w.begin(), tmpIP_w.end());
+
+                IPs.push_back(std::pair<string,string>(tmpIP, inet_ntoa(sin.sin_addr)));
                 FILE_LOG(logDEBUG1) << "IPv4 address: " << IPs.back().first <<
                                         "; Prefix length: " << (unsigned) pUnicast->OnLinkPrefixLength <<
                                         "; Netmask: " << IPs.back().second;
